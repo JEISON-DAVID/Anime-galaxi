@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANIME GALAXI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/copilot_image_1735090235652.jpeg" type="image/x-icon">
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #141414;
+            --card-bg: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .anime-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .anime-thumb {
+            position: relative;
+            padding-top: 140%;
+        }
+
+        .anime-thumb img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .episode-number {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .anime-info {
+            padding: 1rem;
+        }
+
+        .anime-title {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .anime-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1rem;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .video-container {
+            position: relative;
+            padding-top: 56.25%;
+            background: #000;
+            flex: 1;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .servers-container {
+            padding: 1rem;
+            background: var(--card-bg);
+        }
+
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .server-button {
+            padding: 0.75rem;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .server-button:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .server-button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Anime Details Styles */
+        .anime-details {
+            display: none;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .anime-details.active {
+            display: block;
+        }
+
+        .details-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .details-cover img {
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        .details-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .details-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .synopsis {
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .episode-button {
+            padding: 0.75rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .episode-button:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Loading Indicator */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--secondary-bg);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .details-header {
+                grid-template-columns: 1fr;
+            }
+
+            .details-cover {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .modal-content {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo" onclick="loadHome()">ANIME GALAXI</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar anime..." id="searchInput">
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <div class="section-title">
+            <h2 id="sectionTitle">Últimos Episodios</h2>
+        </div>
+        <div class="grid-container" id="mainGrid"></div>
+        <div class="anime-details" id="animeDetails"></div>
+    </main>
+
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="episodeTitle"></h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="video-container">
+                <iframe id="videoPlayer" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="servers-container">
+                <div class="servers-grid" id="serverList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Your existing JavaScript code remains unchanged
+        const API_BASE = 'https://animeflv.ahmedrangel.com/api';
+        let currentAnime = null;
+        let currentEpisode = null;
+
+        async function fetchAPI(endpoint) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
+            }
+        }
+
+        function showLoading(element) {
+            element.innerHTML = '<div class="loading"></div>';
+        }
+
+        async function loadHome() {
+            document.getElementById('sectionTitle').textContent = 'Últimos Episodios';
+            document.getElementById('animeDetails').classList.remove('active');
+            await loadLatestEpisodes();
+        }
+
+        async function loadLatestEpisodes() {
+            const mainGrid = document.getElementById('mainGrid');
+            showLoading(mainGrid);
+
+            const data = await fetchAPI('/list/latest-episodes');
+            
+            if (data?.success) {
+                mainGrid.innerHTML = data.data.map(episode => `
+                    <div class="anime-card" onclick="loadEpisode('${episode.url.split('/').pop()}')">
+                        <div class="anime-thumb">
+                            <img src="${episode.cover}" alt="${episode.title}">
+                            <div class="episode-number">EP ${episode.number}</div>
+                        </div>
+                        <div class="anime-info">
+                            <h3 class="anime-title">${episode.title}</h3>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function searchAnime() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            const mainGrid = document.getElementById('mainGrid');
+            showLoading(mainGrid);
+
+            const data = await fetchAPI(`/search?query=${encodeURIComponent(query)}`);
+            
+            if (data?.success) {
+                document.getElementById('sectionTitle').textContent = 'Resultados de búsqueda';
+                document.getElementById('animeDetails').classList.remove('active');
+
+                mainGrid.innerHTML = data.data.media.map(anime => `
+                    <div class="anime-card" onclick="loadAnimeDetails('${anime.slug}')">
+                        <div class="anime-thumb">
+                            <img src="${anime.cover}" alt="${anime.title}">
+                        </div>
+                        <h3 class="anime-title">${anime.title}</h3>
+                            <div class="anime-meta">
+                                <span>Rating: ${anime.rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function loadAnimeDetails(slug) {
+            const detailsSection = document.getElementById('animeDetails');
+            const mainGrid = document.getElementById('mainGrid');
+            showLoading(detailsSection);
+
+            const data = await fetchAPI(`/anime/${slug}`);
+            
+            if (data?.success) {
+                currentAnime = data.data;
+                document.getElementById('sectionTitle').textContent = 'Detalles del Anime';
+                mainGrid.style.display = 'none';
+                detailsSection.classList.add('active');
+
+                detailsSection.innerHTML = `
+                    <div class="details-header">
+                        <div class="details-cover">
+                            <img src="${data.data.cover}" alt="${data.data.title}">
+                        </div>
+                        <div class="details-info">
+                            <h2>${data.data.title}</h2>
+                            <div class="details-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Estado:</span>
+                                    <span>${data.data.status}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Tipo:</span>
+                                    <span>${data.data.type}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Rating:</span>
+                                    <span>${data.data.rating}</span>
+                                </div>
+                            </div>
+                            <div class="synopsis">
+                                <p>${data.data.synopsis}</p>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Géneros:</span>
+                                <span>${data.data.genres.join(', ')}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="episodes-section">
+                        <h3>Episodios</h3>
+                        <div class="episodes-grid">
+                            ${data.data.episodes.map(episode => `
+                                <button class="episode-button" onclick="loadEpisode('${episode.slug}')">
+                                    Episodio ${episode.number}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadEpisode(episodeSlug) {
+            const modal = document.getElementById('playerModal');
+            const player = document.getElementById('videoPlayer');
+            const serverList = document.getElementById('serverList');
+            const episodeTitle = document.getElementById('episodeTitle');
+            
+            showLoading(serverList);
+            modal.style.display = 'block';
+
+            const data = await fetchAPI(`/anime/episode/${episodeSlug}`);
+            
+            if (data?.success) {
+                currentEpisode = data.data;
+                episodeTitle.textContent = `${data.data.title} - Episodio ${data.data.number}`;
+
+                // Cargar el primer servidor por defecto
+                if (data.data.servers.length > 0) {
+                    player.src = data.data.servers[0].embed;
+                }
+
+                // Generar lista de servidores
+                serverList.innerHTML = data.data.servers.map((server, index) => `
+                    <button class="server-button ${index === 0 ? 'active' : ''}" 
+                            onclick="changeServer(${index})">
+                        Servidor ${index + 1}
+                    </button>
+                `).join('');
+            }
+        }
+
+        function changeServer(index) {
+            if (!currentEpisode || !currentEpisode.servers[index]) return;
+            
+            const player = document.getElementById('videoPlayer');
+            const buttons = document.querySelectorAll('.server-button');
+            
+            // Actualizar servidor activo
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[index].classList.add('active');
+            
+            // Cambiar fuente del reproductor
+            player.src = currentEpisode.servers[index].embed;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('playerModal');
+            const player = document.getElementById('videoPlayer');
+            modal.style.display = 'none';
+            player.src = '';
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', loadLatestEpisodes);
+
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchAnime();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Cerrar modal al hacer clic fuera del contenido
+        document.getElementById('playerModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('playerModal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
